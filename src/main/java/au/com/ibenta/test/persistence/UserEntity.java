@@ -4,9 +4,12 @@ import lombok.Data;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 @Data
 @Entity
 @Table(name = "user")
+@DynamicUpdate
 public class UserEntity {
 
     @Id

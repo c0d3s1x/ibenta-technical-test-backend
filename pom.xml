@@ -37,6 +37,7 @@
 		<hibernate-jpamodelgen.version>5.2.12.Final</hibernate-jpamodelgen.version>
 		<hibernate-types.version>2.9.8</hibernate-types.version>
 
+
 		<!-- Liquibase Plugin -->
 		<spring.version>5.1.14.RELEASE</spring.version>
 		<liquibase.version>3.8.7</liquibase.version>
@@ -45,6 +46,8 @@
 		<liquibase-maven-plugin.version>3.8.7</liquibase-maven-plugin.version>
 		<validation-api.version>2.0.1.Final</validation-api.version>
 		<!-- // Liquibase Plugin -->
+		
+		
 	</properties>
 
 	<repositories>
@@ -181,6 +184,10 @@
 					<groupId>junit</groupId>
 					<artifactId>junit</artifactId>
 				</exclusion>
+				<exclusion>
+		            <groupId>org.junit.vintage</groupId>
+		            <artifactId>junit-vintage-engine</artifactId>
+		        </exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -214,6 +221,12 @@
 			<version>${rest-assured.version}</version>
 			<scope>test</scope>
 			<optional>true</optional>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.mockito</groupId>
+		    <artifactId>mockito-junit-jupiter</artifactId>
+		    <scope>test</scope>
 		</dependency>
 		<!-- // Test Dependencies -->
 	</dependencies>
