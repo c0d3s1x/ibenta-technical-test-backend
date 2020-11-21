@@ -1,8 +1,8 @@
 package au.com.ibenta.test.service;
 
-import java.util.Collection;
-
 import au.com.ibenta.test.persistence.UserEntity;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * Abstraction / contract for User service functionalities.
@@ -12,13 +12,13 @@ import au.com.ibenta.test.persistence.UserEntity;
  */
 public interface IUserService {
 
-	UserEntity create(UserEntity entity);
+	Mono<UserEntity> create(UserEntity entity);
 
-	UserEntity get(Long id);
+	Mono<UserEntity> get(Long id);
 
-	UserEntity update(UserEntity entity);
+	Mono<UserEntity> update(UserEntity entity);
 
-	void delete(Long id);
+	Mono<Void> delete(Long id);
 
-	Collection<UserEntity> list();
+	Flux<UserEntity> list();
 }

@@ -26,3 +26,7 @@ spring:
   h2:
     console:
       enabled: true
+ 
+custom-reactive:
+  datasource:
+    executor-thread-size: 100
