@@ -16,6 +16,8 @@ public class ReactiveCustomConfigurationProperties {
 
 	Datasource dataSource = new Datasource();
 
+	AuthenticationService authService = new AuthenticationService();
+	
 	@Data
 	public class Datasource {
 
@@ -24,5 +26,11 @@ public class ReactiveCustomConfigurationProperties {
 		 * Scheduler where JpaRepository calls will execute.
 		 */
 		private int executorThreadSize = 10;
+	}
+	
+	@Data
+	public class AuthenticationService{
+		
+		private String url = "http://localhost:8181";
 	}
 }

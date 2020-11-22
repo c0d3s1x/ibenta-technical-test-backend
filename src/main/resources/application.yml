@@ -30,3 +30,4 @@ spring:
 custom-reactive:
   datasource:
     executor-thread-size: 100
+  auth-service:    url: http://authentication-service.staging.ibenta.com
