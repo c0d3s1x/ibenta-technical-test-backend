@@ -21,4 +21,6 @@ public interface IUserService {
 	Mono<Void> delete(Long id);
 
 	Flux<UserEntity> list();
+
+	Mono<UserEntity> patch(UserEntity entity);
 }

@@ -3,7 +3,9 @@ package au.com.ibenta.test.service;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,12 +24,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @DisplayName("unit test for user endpoints")
-@ExtendWith(value = { MockitoExtension.class /* SpringExtension.class */ })
-//@WebFluxTest(controllers = { UserController.class })
-//@Import(value = { UserService.class })
+@ExtendWith(value = { MockitoExtension.class })
 public class UserControllerUnitTests {
-
-//	@Autowired
 
 	private UserEntity userRequest;
 
@@ -45,9 +43,10 @@ public class UserControllerUnitTests {
 	@BeforeEach
 	public void setup() {
 
-//		userController = new UserController(userService);
 		webTestClient = WebTestClient.bindToController(userController).build();
 
+//		webTestClient.mutate().responseTimeout(Duration.of(1, ChronoUnit.HOURS)).build();
+		
 		userRequest = new UserEntity();
 		userRequest.setId(99L);
 		userRequest.setFirstName("John");
@@ -96,7 +95,7 @@ public class UserControllerUnitTests {
 
 				.jsonPath("$.email").exists().jsonPath("$.email").isEqualTo(expected.getEmail())
 
-				.jsonPath("$.password").exists().jsonPath("$.password").isEqualTo(expected.getPassword());
+				.jsonPath("$.password").doesNotExist();
 
 		;
 
@@ -122,8 +121,7 @@ public class UserControllerUnitTests {
 
 				.jsonPath("$.email").exists().jsonPath("$.email").isEqualTo(expected.getEmail())
 
-				.jsonPath("$.password").exists().jsonPath("$.password").isEqualTo(expected.getPassword());
-
+				.jsonPath("$.password").doesNotExist();
 		;
 	}
 
@@ -131,7 +129,7 @@ public class UserControllerUnitTests {
 	@DisplayName("test get by id endpoint not found")
 	public void testGetWhenUserDoesNotExist() {
 
-		Long notExistingId = Long.MAX_VALUE;
+		Long notExistingId = 999L;
 
 		when(userService.get(any())).thenReturn(Mono.error(new UserNotFoundException(notExistingId)));
 
@@ -149,7 +147,7 @@ public class UserControllerUnitTests {
 		UserEntity expected = singleUserResponse.block();
 
 		webTestClient.put().uri("/users/{id}", userRequest.getId()).contentType(MediaType.APPLICATION_JSON)
-				.bodyValue(userRequest).exchange().expectStatus().isCreated().expectBody()
+				.bodyValue(userRequest).exchange().expectStatus().isOk().expectBody()
 
 				.jsonPath("$.id").exists().jsonPath("$.id").isEqualTo(expected.getId())
 
@@ -159,8 +157,7 @@ public class UserControllerUnitTests {
 
 				.jsonPath("$.email").exists().jsonPath("$.email").isEqualTo(expected.getEmail())
 
-				.jsonPath("$.password").exists().jsonPath("$.password").isEqualTo(expected.getPassword());
-
+				.jsonPath("$.password").doesNotExist();
 		;
 
 	}
@@ -169,7 +166,7 @@ public class UserControllerUnitTests {
 	@DisplayName("test update endpoint not found")
 	public void testUpdateWhenUserDoesNotExist() {
 
-		Long notExistingId = Long.MAX_VALUE;
+		Long notExistingId = 999L;
 		when(userService.update(any())).thenReturn(Mono.error(new UserNotFoundException(notExistingId)));
 
 		webTestClient.put().uri("/users/{id}", notExistingId).contentType(MediaType.APPLICATION_JSON)
@@ -194,7 +191,7 @@ public class UserControllerUnitTests {
 	@DisplayName("test delete endpoint not found")
 	public void testDeleteWhenUserDoesNotExist() {
 
-		Long notExistingId = Long.MAX_VALUE;
+		Long notExistingId = 999L;
 
 		when(userService.delete(any())).thenReturn(Mono.error(new UserNotFoundException(notExistingId)));
 
@@ -239,15 +236,49 @@ public class UserControllerUnitTests {
 
 				.jsonPath("$[1].email").isEqualTo(expected.get(1).getEmail())
 
-				.jsonPath("$[*].password").exists()
-
-				.jsonPath("$[0].password").isEqualTo(expected.get(0).getPassword())
-
-				.jsonPath("$[1].password").isEqualTo(expected.get(1).getPassword());
+				.jsonPath("$.password").doesNotExist();
 
 		;
 
 		;
 	}
 
+	@Test
+	@DisplayName("test partial update endpoint")
+	public void testPartialUpdateWhenUserExists() {
+
+		when(userService.patch(any())).thenReturn(singleUserResponse);
+
+		UserEntity expected = singleUserResponse.block();
+
+		webTestClient.patch().uri("/users/{id}", userRequest.getId()).contentType(MediaType.APPLICATION_JSON)
+				.bodyValue(userRequest).exchange().expectStatus().isOk().expectBody()
+
+				.jsonPath("$.id").exists().jsonPath("$.id").isEqualTo(expected.getId())
+
+				.jsonPath("$.firstName").exists().jsonPath("$.firstName").isEqualTo(expected.getFirstName())
+
+				.jsonPath("$.lastName").exists().jsonPath("$.lastName").isEqualTo(expected.getLastName())
+
+				.jsonPath("$.email").exists().jsonPath("$.email").isEqualTo(expected.getEmail())
+
+				.jsonPath("$.password").doesNotExist();
+		;
+
+	}
+
+	@Test
+	@DisplayName("test partial update endpoint not found")
+	public void testPartialUpdateWhenUserDoesNotExist() {
+
+		Long notExistingId = 999L;
+
+		when(userService.patch(any())).thenCallRealMethod();
+		when(userService.get(any())).thenReturn(Mono.error(new UserNotFoundException(notExistingId)));
+
+		webTestClient.patch().uri("/users/{id}", notExistingId).contentType(MediaType.APPLICATION_JSON)
+				.bodyValue(userRequest).exchange().expectStatus().isNotFound();
+
+		;
+	}
 }

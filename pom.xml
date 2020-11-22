@@ -36,6 +36,7 @@
 
 		<hibernate-jpamodelgen.version>5.2.12.Final</hibernate-jpamodelgen.version>
 		<hibernate-types.version>2.9.8</hibernate-types.version>
+		<jmapper.version>1.6.0.1</jmapper.version>
 
 
 		<!-- Liquibase Plugin -->
@@ -159,8 +160,15 @@
 			<groupId>com.fasterxml.jackson.module</groupId>
 			<artifactId>jackson-module-jaxb-annotations</artifactId>
 		</dependency>
+		
+		<dependency>
+		    <groupId>com.googlecode.jmapper-framework</groupId>
+		    <artifactId>jmapper-core</artifactId>
+		    <version>${jmapper.version}</version>
+		</dependency>
+		
 		<!-- // Persistence -->
-
+				
 		<!-- Dev Dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

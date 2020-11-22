@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Data
 @Entity
@@ -12,19 +13,20 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate
 public class UserEntity {
 
-    @Id
-    @GeneratedValue
-    private Long id;
+	@Id
+	@GeneratedValue
+	private Long id;
 
-    @Column(nullable = false, name = "first_name")
-    private String firstName;
+	@Column(nullable = false, name = "first_name")
+	private String firstName;
 
-    @Column(nullable = false, name = "last_name")
-    private String lastName;
+	@Column(nullable = false, name = "last_name")
+	private String lastName;
 
-    @Column(nullable = false)
-    private String email;
+	@Column(nullable = false)
+	private String email;
 
-    @Column(nullable = false)
-    private String password;
+	@Column(nullable = false)
+	private String password;
+
 }
